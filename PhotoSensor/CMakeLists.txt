@@ -12,6 +12,7 @@ target_link_libraries(PhotoSensorArray
 
 # include libraries
 target_link_libraries(PhotoSensorArray
-        hardware_timer)
+        hardware_timer
+        )
 
 target_include_directories(PhotoSensorArray PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")

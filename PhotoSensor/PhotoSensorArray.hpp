@@ -6,7 +6,13 @@
 #include "pico/stdlib.h"
 #include "PhotoSensor.hpp"
 
+#include <map>
+
 #define N_SENSORS 5
+#define IDLE_STATE 0x1F
+
+// forward - declaration
+class PhotoSensor;
 
 class PhotoSensorArray
 {
@@ -15,10 +21,12 @@ public:
 
     uint64_t *ReadValues();
 
-    volatile bool idle;
+    // 8 bits representing idle sate of each sensor
+    volatile char idleState;
+
+    std::map<int, PhotoSensor *> SensorInstances;
 
 private:
-    PhotoSensor *sensors[N_SENSORS];
 };
 
 #endif
