@@ -11,7 +11,7 @@ int main()
     stdio_init_all();
     alarm_pool_init_default();
 
-    i2c_init(i2c0, 400 * 1000); // baudrate = 100kHz
+    i2c_init(i2c0, 100 * 1000); // baudrate = 100kHz
 
     printf("GyroTest\n");
 
@@ -20,10 +20,7 @@ int main()
 
     while (true)
     {
-
         printf("angle: ------ %.2f \n", gyro.getAngleZ());
-
-        sleep_ms(1000);
     }
 }
 

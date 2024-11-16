@@ -16,7 +16,6 @@ public:
     int16_t readAngularSpeedZ();
 
     uint16_t mpu6050_GetFIFOAvg();
-    uint16_t mpu6050_PopFIFO();
 
     volatile float bias;
 

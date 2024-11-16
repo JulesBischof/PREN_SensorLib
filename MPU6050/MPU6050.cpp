@@ -1,22 +1,23 @@
 #include "MPU6050.hpp"
 #include "mpu6050.h"
 
-#define SENSITIVITY_FACTOR 131 // @ gyro config 250°/sek FS_SEL=0
+#define SENSITIVITY_FACTOR 16.4 // @ gyro config 250°/sek # FS_SEL=0 -> 131 # FS_SEL=1 -> 65.5 # FS_SEL=2 -> 32.8 # FS_SEL=3 -> 16.4
 #define RAW_THRESHHOLD 20
 #define TIMER_DIFF_MS 50
+#define AVERAGESIZE 3
 
 static bool timer_readZVal_callback(struct repeating_timer *t)
 {
     Mpu6050 *instance = (Mpu6050 *)t->user_data;
 
-    float vel = (instance->readAngularSpeedZ()) - instance->bias;
+    float vel = (instance->readAngularSpeedZ()) - instance->bias;;
 
     if (vel < RAW_THRESHHOLD && vel > -RAW_THRESHHOLD)
         return true;
 
     vel = vel / (SENSITIVITY_FACTOR); // calc unit °/s
 
-    float angularchange = vel * ( (float)TIMER_DIFF_MS / 1000); // calc new angle
+    float angularchange = vel * ((float)TIMER_DIFF_MS / 1000); // calc new angle
 
     float angle = instance->getAngleZ();
 
@@ -104,13 +105,6 @@ void Mpu6050::_i2c_read_registers(uint8_t reg, uint8_t *buffer, size_t length)
     i2c_read_blocking(_i2c, _i2c_addr, buffer, length, false);
 }
 
-uint16_t Mpu6050::mpu6050_PopFIFO()
-{
-    uint8_t buffer[2];
-    _i2c_read_registers(MPU6050_RA_FIFO_R_W, buffer, 2);
-    return (buffer[0] << 8) | buffer[1];
-}
-
 uint16_t Mpu6050::mpu6050_GetFIFOCount()
 {
     uint8_t buffer[2];
@@ -156,16 +150,16 @@ int Mpu6050::mpu650init()
     _i2c_write_register(MPU6050_RA_PWR_MGMT_1, 0x00);
 
     // Set DLPF (Digital Low Pass Filter) to 42 Hz
-    _i2c_write_register(MPU6050_RA_CONFIG, MPU6050_DLPF_BW_42);
+    _i2c_write_register(MPU6050_RA_CONFIG, MPU6050_DLPF_BW_5);
 
     // Set the sample rate to 1 kHz (divider = 0)
     _i2c_write_register(MPU6050_RA_SMPLRT_DIV, 0x00);
 
-    // Configure the Gyro to ±250°/s
-    _i2c_write_register(MPU6050_RA_GYRO_CONFIG, 0x00);
+    // Configure the Gyro to FS_SEL = ±250°/s (0) / FS_SEL = ±500°/s (1) / FS_SEL = ±1000°/s (2) / FS_SEL = ±2000°/s (3)
+    _i2c_write_register(MPU6050_RA_GYRO_CONFIG, 0b11 << 3);
 
     // FIFO enable
-    _i2c_write_register(MPU6050_RA_USER_CTRL, 0x40); // FIFO_EN aktivieren
+    _i2c_write_register(MPU6050_RA_USER_CTRL, 0x40);
 
     // Enable FIFO just for Z-gyro
     _i2c_write_register(MPU6050_RA_FIFO_EN, 1 << MPU6050_ZG_FIFO_EN_BIT);
@@ -176,7 +170,7 @@ int Mpu6050::mpu650init()
     // FIFO reset
     _i2c_write_register(MPU6050_RA_USER_CTRL, 1 << MPU6050_USERCTRL_FIFO_RESET_BIT);
 
-    sleep_ms(100); //wait until first measurment
+    sleep_ms(100); // wait until first measurment
 
     // get bias
     bias = (float)readAngularSpeedZ();
