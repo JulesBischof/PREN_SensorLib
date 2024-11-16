@@ -58,6 +58,7 @@ target_include_directories(SensorLib PRIVATE
 
 # add subdirectories
 add_subdirectory(PhotoSensor)
+add_subdirectory(MPU6050)
 
 # Add any user requested libraries
 target_link_libraries(SensorLib 
@@ -68,6 +69,7 @@ target_link_libraries(SensorLib
         hardware_clocks
         
         PhotoSensorArray
+        MPU6050
         )
 
 pico_add_extra_outputs(SensorLib)

@@ -3,24 +3,43 @@
 #include "hardware/timer.h"
 
 #include "PhotoSensor/PhotoSensorArray.hpp"
+#include "MPU6050/MPU6050.hpp"
+#include "MPU6050/mpu6050.h"
 
 int main()
 {
     stdio_init_all();
     alarm_pool_init_default();
 
-    int gpios[5] = {10, 11, 12, 13, 14};
+    i2c_init(i2c0, 400 * 1000); // baudrate = 100kHz
 
-    bool boolVals[5];
+    printf("GyroTest\n");
 
-    PhotoSensorArray SensorArray(gpios);
+    Mpu6050 gyro(17, 16, 18, i2c0, MPU6050_ADDRESS_AD0_LOW);
+
 
     while (true)
     {
-        uint64_t *values = SensorArray.ReadValues();
 
-        printf("raw...  1| %lld |   2| %lld |   3| %lld |   4| %lld |   5| %lld |\n", values[0], values[1], values[2], values[3], values[4]);
+        printf("angle: ------ %.2f \n", gyro.getAngleZ());
 
-        delete values;
+        sleep_ms(1000);
     }
 }
+
+// Liniensensor Test
+
+// int gpios[5] = {10, 11, 12, 13, 14};
+
+// bool boolVals[5];
+
+// PhotoSensorArray SensorArray(gpios);
+
+// while (true)
+// {
+//     uint64_t *values = SensorArray.ReadValues();
+
+//     printf("raw...  1| %lld |   2| %lld |   3| %lld |   4| %lld |   5| %lld |\n", values[0], values[1], values[2], values[3], values[4]);
+
+//     delete values;
+// }
