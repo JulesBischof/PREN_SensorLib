@@ -20,7 +20,7 @@ public:
     volatile float bias;
 
 private:
-    int mpu650init();
+    int _mpu6050init();
 
     volatile float _angle_z;
 

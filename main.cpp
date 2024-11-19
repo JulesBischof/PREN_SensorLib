@@ -6,6 +6,8 @@
 #include "MPU6050/MPU6050.hpp"
 #include "MPU6050/mpu6050.h"
 
+#include "TFLuna/TFLuna.hpp"
+
 int main()
 {
     stdio_init_all();
@@ -13,18 +15,36 @@ int main()
 
     i2c_init(i2c0, 100 * 1000); // baudrate = 100kHz
 
-    printf("GyroTest\n");
-
-    Mpu6050 gyro(17, 16, 18, i2c0, MPU6050_ADDRESS_AD0_LOW);
-
+    TFLuna lidar(17, 16, 18, i2c0, TFL_DEF_ADR);
 
     while (true)
     {
-        printf("angle: ------ %.2f \n", gyro.getAngleZ());
+        int16_t dist = 0;
+        int16_t flux = 0;
+        int16_t temp = 0;
+
+        lidar.getData(dist, flux, temp);
+
+        printf("dist = %d, flux = %d, temp = %d \n", dist, flux, temp);
+
+        sleep_ms(1000);
     }
 }
 
-// Liniensensor Test
+// Gyro Test ===========================================
+
+// i2c_init(i2c0, 100 * 1000); // baudrate = 100kHz
+
+// printf("GyroTest\n");
+
+// Mpu6050 gyro(17, 16, 18, i2c0, MPU6050_ADDRESS_AD0_LOW);
+
+// while (true)
+// {
+//     printf("angle: ------ %.2f \n", gyro.getAngleZ());
+// }
+
+// Liniensensor Test ===========================================
 
 // int gpios[5] = {10, 11, 12, 13, 14};
 
