@@ -60,6 +60,7 @@ target_include_directories(SensorLib PRIVATE
 add_subdirectory(PhotoSensor)
 add_subdirectory(MPU6050)
 add_subdirectory(TFLuna)
+add_subdirectory(TMC5240)
 
 # Add any user requested libraries
 target_link_libraries(SensorLib 
@@ -72,6 +73,7 @@ target_link_libraries(SensorLib
         PhotoSensorArray
         MPU6050
         TFLuna
+        TMC5240
         )
 
 pico_add_extra_outputs(SensorLib)
