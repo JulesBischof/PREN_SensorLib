@@ -73,7 +73,7 @@ target_link_libraries(SensorLib
         PhotoSensorArray
         MPU6050
         TFLuna
-        TMC5240
+        Tmc5240
         )
 
 pico_add_extra_outputs(SensorLib)

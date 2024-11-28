@@ -5,6 +5,7 @@
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"
 #include "hardware/timer.h"
+#include "mpu6050.h"
 
 class Mpu6050
 {

@@ -4,48 +4,34 @@
 
 #include "PhotoSensor/PhotoSensorArray.hpp"
 #include "MPU6050/MPU6050.hpp"
-#include "MPU6050/mpu6050.h"
+
+#include "TMC5240/TMC5240.hpp"
 
 #include "TFLuna/TFLuna.hpp"
 
 int main()
 {
     stdio_init_all();
-    alarm_pool_init_default();
+    // alarm_pool_init_default();
 
-    // i2c_init(i2c0, 100 * 1000); // baudrate = 100kHz
+    TMC5240 stepper(16, 19, 17, 18, spi0);
 
-    // TFLuna lidar(17, 16, 18, i2c0, TFL_DEF_ADR);
+    stepper.initCurrentSetting();
+    stepper.initSpreadCycle();
 
-    // while (true)
-    // {
-    //     int16_t dist = 0;
-    //     int16_t flux = 0;
-    //     int16_t temp = 0;
+    stepper.moveVelocityMode(0, 200000, 5000);
 
-    //     lidar.getData(dist, flux, temp);
+    sleep_ms(2000);
 
-    //     printf("dist = %d, flux = %d, temp = %d \n", dist, flux, temp);
+    stepper.moveVelocityMode(0, 400000, 5000);
 
-    //     sleep_ms(1000);
-    // }
+    sleep_ms(2000);
 
-    // Liniensensor Test ===========================================
+    stepper.moveVelocityMode(0, 3000000, 100000);
 
-    int gpios[5] = {10, 11, 12, 13, 14};
+    sleep_ms(5000);
 
-    bool boolVals[5];
-
-    PhotoSensorArray SensorArray(gpios);
-
-    while (true)
-    {
-        uint64_t *values = SensorArray.ReadValues();
-
-        printf("raw...  1| %lld |   2| %lld |   3| %lld |   4| %lld |   5| %lld |\n", values[0], values[1], values[2], values[3], values[4]);
-
-        delete values;
-    }
+    stepper.moveVelocityMode(0, 0, 1000);
 }
 
 // Gyro Test ===========================================
@@ -59,4 +45,40 @@ int main()
 // while (true)
 // {
 //     printf("angle: ------ %.2f \n", gyro.getAngleZ());
+// }
+
+// Liniensensor Test ===========================================
+
+// int gpios[5] = {10, 11, 12, 13, 14};
+
+// bool boolVals[5];
+
+// PhotoSensorArray SensorArray(gpios);
+
+// while (true)
+// {
+//     uint64_t *values = SensorArray.ReadValues();
+
+//     printf("raw...  1| %lld |   2| %lld |   3| %lld |   4| %lld |   5| %lld |\n", values[0], values[1], values[2], values[3], values[4]);
+
+//     delete values;
+// }
+
+// LIDAR Test =====================================================
+
+// i2c_init(i2c0, 100 * 1000); // baudrate = 100kHz
+
+// TFLuna lidar(17, 16, 18, i2c0, TFL_DEF_ADR);
+
+// while (true)
+// {
+//     int16_t dist = 0;
+//     int16_t flux = 0;
+//     int16_t temp = 0;
+
+//     lidar.getData(dist, flux, temp);
+
+//     printf("dist = %d, flux = %d, temp = %d \n", dist, flux, temp);
+
+//     sleep_ms(1000);
 // }
